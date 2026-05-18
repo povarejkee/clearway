@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { IDocument } from '../interfaces/document.interface';
 import { delay, Observable } from 'rxjs';
 
-const DELAY: number = 2000;
+const DELAY: number = 1000;
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {

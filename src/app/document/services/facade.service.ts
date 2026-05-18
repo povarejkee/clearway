@@ -32,6 +32,22 @@ export class FacadeService {
       });
   }
 
+  public zoomIn(): void {
+    this.state.zoom.update((value: number): number => {
+      if (value >= 200) return value;
+
+      return value + 10;
+    });
+  }
+
+  public zoomOut(): void {
+    this.state.zoom.update((value: number): number => {
+      if (value <= 20) return value;
+
+      return value - 10;
+    });
+  }
+
   // <STATE>
   public get document(): Signal<IDocument> {
     return this.state.document;
@@ -39,6 +55,10 @@ export class FacadeService {
 
   public get isLoadingDoc(): Signal<boolean> {
     return this.state.isLoadingDoc;
+  }
+
+  public get zoom(): Signal<number> {
+    return this.state.zoom;
   }
   // </STATE>
 }
