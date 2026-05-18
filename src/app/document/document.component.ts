@@ -14,7 +14,7 @@ export class DocumentComponent implements OnInit {
   private route: ActivatedRoute = inject(ActivatedRoute);
   protected facade: FacadeService = inject(FacadeService);
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getDocument();
   }
 
