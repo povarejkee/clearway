@@ -1,0 +1,15 @@
+<section class="document">
+  @if (facade.isLoadingDoc()) {
+    <p class="document-loader">Loading...</p>
+  } @else {
+    <header class="document-header">
+      <span class="document-header-title">{{ facade.document()?.name }}</span>
+    </header>
+
+    <main class="document-viewer">
+      @for (page of facade.document()?.pages; track page.number) {
+        <app-page [page]="page" />
+      }
+    </main>
+  }
+</section>
