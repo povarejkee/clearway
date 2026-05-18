@@ -26,6 +26,11 @@
     align-items: center;
     gap: 16px;
     padding: 24px;
+
+    app-page {
+      width: 100%;
+      max-width: 860px;
+    }
   }
 
   &-loader {
