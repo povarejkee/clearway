@@ -1,0 +1,5 @@
+@if (facade.isLoadingDoc()) {
+  <p>loading...</p>
+} @else {
+  <p>{{ facade.document()?.name }}</p>
+}
