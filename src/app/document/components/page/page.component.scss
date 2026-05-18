@@ -1,7 +1,13 @@
 :host {
   width: 100%;
+}
+
+.page-container {
+  position: relative;
+  width: 100%;
 
   img {
+    display: block;
     width: 100%;
     height: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);

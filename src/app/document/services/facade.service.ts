@@ -4,7 +4,8 @@ import { finalize, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { CoreService } from './core.service';
 import { StateService } from './state.service';
-import { IDocument } from '../interfaces/document.interface';
+import { IAnnotation, IDocument, IDocumentPage } from '../interfaces';
+import { AnnotationType } from '../types';
 
 @Injectable({ providedIn: 'root' })
 export class FacadeService {
@@ -30,6 +31,43 @@ export class FacadeService {
           // todo handle errors
         },
       });
+  }
+
+  public addAnnotation(pageNumber: number, type: AnnotationType, x: number, y: number): void {
+    const annotation: IAnnotation = { id: crypto.randomUUID(), type, x, y, content: '' };
+
+    this.patchPage(pageNumber, (page) => ({
+      ...page,
+      annotations: [...page.annotations, annotation],
+    }));
+  }
+
+  public deleteAnnotation(pageNumber: number, id: string): void {
+    this.patchPage(pageNumber, (page) => ({
+      ...page,
+      annotations: page.annotations.filter((a) => a.id !== id),
+    }));
+  }
+
+  public moveAnnotation(pageNumber: number, id: string, x: number, y: number): void {
+    this.patchPage(pageNumber, (page) => ({
+      ...page,
+      annotations: page.annotations.map((a) => (a.id === id ? { ...a, x, y } : a)),
+    }));
+  }
+
+  public updateAnnotationContent(pageNumber: number, id: string, content: string): void {
+    this.patchPage(pageNumber, (page) => ({
+      ...page,
+      annotations: page.annotations.map((a) => (a.id === id ? { ...a, content } : a)),
+    }));
+  }
+
+  private patchPage(pageNumber: number, patch: (page: IDocumentPage) => IDocumentPage): void {
+    this.state.document.update((doc) => ({
+      ...doc,
+      pages: doc.pages.map((p) => (p.number === pageNumber ? patch(p) : p)),
+    }));
   }
 
   // <STATE>

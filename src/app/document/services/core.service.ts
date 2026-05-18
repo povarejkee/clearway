@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IDocument, IDocumentPage } from '../interfaces/document.interface';
+import { IAnnotation, IDocument, IDocumentPage } from '../interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class CoreService {
@@ -9,6 +9,7 @@ export class CoreService {
       pages: doc.pages.map((page: IDocumentPage) => ({
         ...page,
         imageUrl: `/documents/${page.imageUrl}`,
+        annotations: [] as IAnnotation[],
       })),
     };
   }

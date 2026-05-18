@@ -1,1 +1,20 @@
-<img [src]="page().imageUrl" [alt]="'Page ' + page().number" />
+<div class="page-container" (contextmenu)="onContextMenu($event)" (click)="closeContextMenu()">
+  <img [src]="page().imageUrl" [alt]="'Page ' + page().number" />
+
+  @for (annotation of annotations; track annotation.id) {
+    <app-annotation
+      [annotation]="annotation"
+      (deleted)="onAnnotationDelete($event)"
+      (moved)="onAnnotationMove($event)"
+      (contentChanged)="onAnnotationContentChange($event)"
+    />
+  }
+
+  @if (contextMenuPos()) {
+    <app-context-menu
+      [x]="contextMenuPos()!.x"
+      [y]="contextMenuPos()!.y"
+      (typeSelect)="onAnnotationCreate($event)"
+    />
+  }
+</div>

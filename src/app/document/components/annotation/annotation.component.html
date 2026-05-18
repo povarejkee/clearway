@@ -1,0 +1,24 @@
+<div class="annotation" (click)="$event.stopPropagation()">
+  <div class="annotation-handle" (mousedown)="onDragStart($event)"></div>
+
+  <button class="annotation-delete" (click)="onDelete($event)">✕</button>
+
+  @if (annotation().type === 'text') {
+    <div
+      class="annotation-text"
+      contenteditable="true"
+      (input)="onTextInput($event)"
+      #textEl
+    ></div>
+  } @else {
+    <input #fileInput type="file" accept="image/*" (change)="onFileChange($event)" />
+
+    @if (hasContent()) {
+      <img class="annotation-image" [src]="annotation().content" alt="annotation" />
+    } @else {
+      <div class="annotation-image-placeholder" (click)="onImageClick()">
+        Нажмите чтобы выбрать изображение
+      </div>
+    }
+  }
+</div>

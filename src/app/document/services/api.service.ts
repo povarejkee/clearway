@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IDocument } from '../interfaces/document.interface';
+import { IDocument } from '../interfaces';
 import { delay, Observable } from 'rxjs';
 
 const DELAY: number = 2000;
