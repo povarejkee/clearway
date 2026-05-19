@@ -19,7 +19,7 @@ export class FacadeService {
       .getDocument(id)
       .pipe(
         map((doc: IDocument): IDocument => this.core.transformDocument(doc)),
-        finalize(() => this.state.isLoadingDoc.set(false)),
+        finalize((): void => this.state.isLoadingDoc.set(false)),
       )
       .subscribe({
         next: (doc: IDocument): void => {

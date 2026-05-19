@@ -4,12 +4,13 @@ import {
   createComponent,
   Directive,
   EnvironmentInjector,
-  HostListener,
   inject,
   input,
+  inputBinding,
   InputSignal,
   OnDestroy,
   output,
+  outputBinding,
   OutputEmitterRef,
 } from '@angular/core';
 import { IContextMenuItem } from '../../interfaces/context-menu-item.interface';
@@ -17,6 +18,9 @@ import { ContextMenuComponent } from '../../components/context-menu/context-menu
 
 @Directive({
   selector: '[appContextMenu]',
+  host: {
+    '(contextmenu)': 'onContextMenu($event)',
+  },
 })
 export class ContextMenuDirective implements OnDestroy {
   public items: InputSignal<IContextMenuItem[]> = input.required<IContextMenuItem[]>();
@@ -25,10 +29,9 @@ export class ContextMenuDirective implements OnDestroy {
   private appRef: ApplicationRef = inject(ApplicationRef);
   private injector: EnvironmentInjector = inject(EnvironmentInjector);
 
-  private componentRef: ComponentRef<ContextMenuComponent> = null;
-  private closeListener: () => void = null;
+  private componentRef: ComponentRef<ContextMenuComponent> | null = null;
+  private closeListener: (() => void) | null = null;
 
-  @HostListener('contextmenu', ['$event'])
   protected onContextMenu(event: MouseEvent): void {
     event.preventDefault();
 
@@ -36,15 +39,15 @@ export class ContextMenuDirective implements OnDestroy {
 
     const componentRef: ComponentRef<ContextMenuComponent> = createComponent(ContextMenuComponent, {
       environmentInjector: this.injector,
-    });
-
-    componentRef.setInput('x', event.clientX);
-    componentRef.setInput('y', event.clientY);
-    componentRef.setInput('items', this.items());
-
-    componentRef.instance.itemSelect.subscribe((item: IContextMenuItem): void => {
-      this.itemSelect.emit(item);
-      this.destroyMenu();
+      bindings: [
+        inputBinding('x', () => event.clientX),
+        inputBinding('y', () => event.clientY),
+        inputBinding('items', () => this.items()),
+        outputBinding<IContextMenuItem>('itemSelect', (item: IContextMenuItem): void => {
+          this.itemSelect.emit(item);
+          this.destroyMenu();
+        }),
+      ],
     });
 
     this.appRef.attachView(componentRef.hostView);
@@ -62,15 +65,13 @@ export class ContextMenuDirective implements OnDestroy {
 
   private destroyMenu(): void {
     if (this.componentRef) {
-      this.appRef.detachView(this.componentRef.hostView); // cd drop
+      this.appRef.detachView(this.componentRef.hostView);
       this.componentRef.destroy();
       this.componentRef = null;
     }
 
-    // check an edge case like this.router.navigate["bla-bla-route"]
     if (this.closeListener) {
       document.removeEventListener('click', this.closeListener);
-
       this.closeListener = null;
     }
   }
