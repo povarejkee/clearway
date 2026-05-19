@@ -5,7 +5,7 @@ import { delay, Observable } from 'rxjs';
 
 const DELAY: number = 1000;
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ApiService {
   private http: HttpClient = inject(HttpClient);
 

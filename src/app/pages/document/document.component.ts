@@ -2,6 +2,7 @@ import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FacadeService } from './services/facade.service';
 import { DocumentImports, DocumentProviders } from './imports';
+import { IAnnotation } from './interfaces/annotation.interface';
 
 const PAGE_BASE_WIDTH: number = 860;
 
