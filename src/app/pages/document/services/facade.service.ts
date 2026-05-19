@@ -44,6 +44,22 @@ export class FacadeService {
     }));
   }
 
+  public moveAnnotation(pageNumber: number, id: string, x: number, y: number): void {
+    this.state.document.update((doc: IDocument): IDocument => ({
+      ...doc,
+      pages: doc.pages.map((page: IDocumentPage): IDocumentPage =>
+        page.number === pageNumber
+          ? {
+              ...page,
+              annotations: page.annotations.map((a: IAnnotation): IAnnotation =>
+                a.id === id ? { ...a, x, y } : a,
+              ),
+            }
+          : page,
+      ),
+    }));
+  }
+
   public deleteAnnotation(pageNumber: number, id: string): void {
     this.state.document.update((doc: IDocument): IDocument => ({
       ...doc,

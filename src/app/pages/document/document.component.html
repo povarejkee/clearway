@@ -21,6 +21,7 @@
           [style.width.px]="pageWidth()"
           (annotationAdd)="facade.addAnnotation(page.number, $event)"
           (annotationDelete)="facade.deleteAnnotation(page.number, $event)"
+          (annotationMove)="facade.moveAnnotation(page.number, $event.id, $event.x, $event.y)"
         />
       }
     </main>

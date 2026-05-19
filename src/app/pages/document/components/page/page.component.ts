@@ -15,6 +15,7 @@ import { AnnotationComponent } from '../annotation/annotation.component';
 import { AnnotationDraftComponent } from '../annotation-draft/annotation-draft.component';
 import { IContextMenuItem } from '../../../../core/interfaces/context-menu-item.interface';
 import { CONTEXT_MENU_ITEMS } from '../../db';
+import { TCoordinate } from '../../types';
 
 @Component({
   selector: 'app-page',
@@ -26,8 +27,13 @@ export class PageComponent {
   public page: InputSignal<IDocumentPage> = input.required<IDocumentPage>();
   public annotationAdd: OutputEmitterRef<IAnnotation> = output<IAnnotation>();
   public annotationDelete: OutputEmitterRef<string> = output<string>();
+  public annotationMove: OutputEmitterRef<{ id: string; x: number; y: number }> = output<{
+    id: string;
+    x: number;
+    y: number;
+  }>();
 
-  protected draft: WritableSignal<TDraftAnnotationInput> = signal(null);
+  protected draft: WritableSignal<TCoordinate> = signal(null);
 
   protected readonly contextMenuItems: IContextMenuItem[] = CONTEXT_MENU_ITEMS;
 
