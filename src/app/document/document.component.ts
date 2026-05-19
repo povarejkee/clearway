@@ -1,7 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FacadeService } from './services/facade.service';
 import { DocumentImports, DocumentProviders } from './imports';
+
+const PAGE_BASE_WIDTH: number = 860;
 
 @Component({
   selector: 'app-document',
@@ -13,6 +15,10 @@ import { DocumentImports, DocumentProviders } from './imports';
 export class DocumentComponent implements OnInit {
   private route: ActivatedRoute = inject(ActivatedRoute);
   protected facade: FacadeService = inject(FacadeService);
+
+  protected pageWidth: Signal<number> = computed((): number => {
+    return Math.round((PAGE_BASE_WIDTH * this.facade.zoom()) / 100);
+  });
 
   ngOnInit(): void {
     this.getDocument();

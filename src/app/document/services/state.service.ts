@@ -5,4 +5,5 @@ import { IDocument } from '../interfaces';
 export class StateService {
   public document: WritableSignal<IDocument> = signal<IDocument>(null);
   public isLoadingDoc: WritableSignal<boolean> = signal<boolean>(false);
+  public zoom: WritableSignal<number> = signal<number>(100);
 }
