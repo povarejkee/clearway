@@ -1,0 +1,8 @@
+<div
+  class="page-container"
+  appContextMenu
+  [items]="contextMenuItems"
+  (itemSelect)="onMenuItemSelect($event)"
+>
+  <img [src]="page().imageUrl" [alt]="'Page ' + page().number" />
+</div>

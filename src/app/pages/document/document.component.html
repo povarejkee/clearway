@@ -6,10 +6,12 @@
       <span class="document-header-title">{{ facade.document()?.name }}</span>
 
       <div class="document-header-controls">
-        <span class="document-header-zoom">{{ facade.zoom() }}%</span>
-        <button class="document-header-btn" (click)="facade.zoomOut()">−</button>
-        <button class="document-header-btn" (click)="facade.zoomIn()">+</button>
+        <span class="document-header-controls-zoom">{{ facade.zoom() }}%</span>
+        <button class="document-header-controls-btn" (click)="facade.zoomOut()">−</button>
+        <button class="document-header-controls-btn" (click)="facade.zoomIn()">+</button>
       </div>
+
+      <button class="document-header-save" (click)="facade.save()">Сохранить</button>
     </header>
 
     <main class="document-viewer">

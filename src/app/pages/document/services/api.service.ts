@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IDocument } from '../interfaces';
+import { IDocument } from '../interfaces/document.interface';
 import { delay, Observable } from 'rxjs';
 
 const DELAY: number = 1000;
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ApiService {
   private http: HttpClient = inject(HttpClient);
 

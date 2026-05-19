@@ -1,7 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { IDocument } from '../interfaces';
+import { IDocument } from '../interfaces/document.interface';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class StateService {
   public document: WritableSignal<IDocument> = signal<IDocument>(null);
   public isLoadingDoc: WritableSignal<boolean> = signal<boolean>(false);

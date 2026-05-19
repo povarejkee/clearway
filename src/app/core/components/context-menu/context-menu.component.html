@@ -1,0 +1,5 @@
+<ul class="context-menu">
+  @for (item of items(); track item.value) {
+    <li class="context-menu-item" (click)="onSelect(item, $event)">{{ item.label }}</li>
+  }
+</ul>

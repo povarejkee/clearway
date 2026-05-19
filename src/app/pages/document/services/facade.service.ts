@@ -4,10 +4,9 @@ import { finalize, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { CoreService } from './core.service';
 import { StateService } from './state.service';
-import { IAnnotation, IDocument, IDocumentPage } from '../interfaces';
-import { AnnotationType } from '../types';
+import { IDocument } from '../interfaces/document.interface';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FacadeService {
   private api: ApiService = inject(ApiService);
   private core: CoreService = inject(CoreService);
@@ -19,7 +18,7 @@ export class FacadeService {
     this.api
       .getDocument(id)
       .pipe(
-        map((doc: IDocument): IDocument => this.core.prepareDocument(doc)),
+        map((doc: IDocument): IDocument => this.core.transformDocument(doc)),
         finalize(() => this.state.isLoadingDoc.set(false)),
       )
       .subscribe({
@@ -31,43 +30,6 @@ export class FacadeService {
           // todo handle errors
         },
       });
-  }
-
-  public addAnnotation(pageNumber: number, type: AnnotationType, x: number, y: number): void {
-    const annotation: IAnnotation = { id: crypto.randomUUID(), type, x, y, content: '' };
-
-    this.patchPage(pageNumber, (page) => ({
-      ...page,
-      annotations: [...page.annotations, annotation],
-    }));
-  }
-
-  public deleteAnnotation(pageNumber: number, id: string): void {
-    this.patchPage(pageNumber, (page) => ({
-      ...page,
-      annotations: page.annotations.filter((a) => a.id !== id),
-    }));
-  }
-
-  public moveAnnotation(pageNumber: number, id: string, x: number, y: number): void {
-    this.patchPage(pageNumber, (page) => ({
-      ...page,
-      annotations: page.annotations.map((a) => (a.id === id ? { ...a, x, y } : a)),
-    }));
-  }
-
-  public updateAnnotationContent(pageNumber: number, id: string, content: string): void {
-    this.patchPage(pageNumber, (page) => ({
-      ...page,
-      annotations: page.annotations.map((a) => (a.id === id ? { ...a, content } : a)),
-    }));
-  }
-
-  private patchPage(pageNumber: number, patch: (page: IDocumentPage) => IDocumentPage): void {
-    this.state.document.update((doc) => ({
-      ...doc,
-      pages: doc.pages.map((p) => (p.number === pageNumber ? patch(p) : p)),
-    }));
   }
 
   public zoomIn(): void {
@@ -84,6 +46,10 @@ export class FacadeService {
 
       return value - 10;
     });
+  }
+
+  public save(): void {
+    console.log(this.state.document());
   }
 
   // <STATE>
