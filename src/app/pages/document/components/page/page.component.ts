@@ -16,22 +16,21 @@ import { AnnotationDraftComponent } from '../annotation-draft/annotation-draft.c
 import { IContextMenuItem } from '../../../../core/interfaces/context-menu-item.interface';
 import { CONTEXT_MENU_ITEMS } from '../../db';
 import { TCoordinate } from '../../types';
+import { PageImports } from './imports';
 
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
   styleUrl: './page.component.scss',
-  imports: [ContextMenuDirective, AnnotationComponent, AnnotationDraftComponent],
+  imports: PageImports,
 })
 export class PageComponent {
   public page: InputSignal<IDocumentPage> = input.required<IDocumentPage>();
+  public zoomFactor: InputSignal<number> = input.required<number>();
   public annotationAdd: OutputEmitterRef<IAnnotation> = output<IAnnotation>();
   public annotationDelete: OutputEmitterRef<string> = output<string>();
-  public annotationMove: OutputEmitterRef<{ id: string; x: number; y: number }> = output<{
-    id: string;
-    x: number;
-    y: number;
-  }>();
+  public annotationMove: OutputEmitterRef<Omit<IAnnotation, 'content'>> =
+    output<Omit<IAnnotation, 'content'>>();
 
   protected draft: WritableSignal<TCoordinate> = signal(null);
 
@@ -42,10 +41,12 @@ export class PageComponent {
   }
 
   protected onDraftCommit(content: string): void {
+    const zf: number = this.zoomFactor();
+
     this.annotationAdd.emit({
       id: crypto.randomUUID(),
-      x: this.draft().x,
-      y: this.draft().y,
+      x: Math.round(this.draft().x / zf),
+      y: Math.round(this.draft().y / zf),
       content,
     });
 

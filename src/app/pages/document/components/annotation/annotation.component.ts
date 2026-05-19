@@ -20,8 +20,8 @@ import { TCoordinate } from '../../types';
   templateUrl: './annotation.component.html',
   styleUrl: './annotation.component.scss',
   host: {
-    '[style.left.px]': 'annotation().x',
-    '[style.top.px]': 'annotation().y',
+    '[style.left.px]': 'annotation().x * zoomFactor()',
+    '[style.top.px]': 'annotation().y * zoomFactor()',
     '[style.transform]': 'transform()',
     '[style.cursor]': 'isDragging() ? "grabbing" : "grab"',
     '[style.user-select]': 'isDragging() ? "none" : null',
@@ -30,6 +30,7 @@ import { TCoordinate } from '../../types';
 })
 export class AnnotationComponent implements OnDestroy {
   public annotation: InputSignal<IAnnotation> = input.required<IAnnotation>();
+  public zoomFactor: InputSignal<number> = input.required<number>();
   public delete: OutputEmitterRef<void> = output<void>();
   public move: OutputEmitterRef<TCoordinate> = output<TCoordinate>();
 
@@ -42,9 +43,10 @@ export class AnnotationComponent implements OnDestroy {
   private within: TCoordinate = { x: 0, y: 0 };
 
   protected transform: Signal<string> = computed((): string => {
-    const transformed: TCoordinate = this.dragTransform();
+    const zf: number = this.zoomFactor();
+    const drag: TCoordinate = this.dragTransform();
 
-    return transformed ? `translate(${transformed.x}px, ${transformed.y}px)` : null;
+    return drag ? `translate(${drag.x}px, ${drag.y}px) scale(${zf})` : `scale(${zf})`;
   });
 
   ngOnDestroy(): void {
@@ -58,11 +60,12 @@ export class AnnotationComponent implements OnDestroy {
 
     const parent: HTMLElement = this.el.nativeElement.parentElement;
     const self: HTMLElement = this.el.nativeElement;
+    const visualRect: DOMRect = self.getBoundingClientRect();
 
     this.startMouse = { x: event.clientX, y: event.clientY };
     this.within = {
-      x: parent.offsetWidth - self.offsetWidth,
-      y: parent.offsetHeight - self.offsetHeight,
+      x: parent.offsetWidth - visualRect.width,
+      y: parent.offsetHeight - visualRect.height,
     };
 
     this.isDragging.set(true);
@@ -72,21 +75,29 @@ export class AnnotationComponent implements OnDestroy {
   }
 
   private onMouseMove = (event: MouseEvent): void => {
-    const rawX: number = this.annotation().x + event.clientX - this.startMouse.x;
-    const rawY: number = this.annotation().y + event.clientY - this.startMouse.y;
+    const zf: number = this.zoomFactor();
+    const visualX: number = this.annotation().x * zf;
+    const visualY: number = this.annotation().y * zf;
+
+    const rawX: number = visualX + event.clientX - this.startMouse.x;
+    const rawY: number = visualY + event.clientY - this.startMouse.y;
 
     this.dragTransform.set({
-      x: Math.max(0, Math.min(rawX, this.within.x)) - this.annotation().x,
-      y: Math.max(0, Math.min(rawY, this.within.y)) - this.annotation().y,
+      x: Math.max(0, Math.min(rawX, this.within.x)) - visualX,
+      y: Math.max(0, Math.min(rawY, this.within.y)) - visualY,
     });
   };
 
   private onMouseUp = (): void => {
     const transformed = this.dragTransform();
+    const zf: number = this.zoomFactor();
+
+    const finalVisualX: number = this.annotation().x * zf + (transformed?.x ?? 0);
+    const finalVisualY: number = this.annotation().y * zf + (transformed?.y ?? 0);
 
     this.move.emit({
-      x: this.annotation().x + (transformed?.x ?? 0),
-      y: this.annotation().y + (transformed?.y ?? 0),
+      x: Math.round(finalVisualX / zf),
+      y: Math.round(finalVisualY / zf),
     });
 
     this.isDragging.set(false);

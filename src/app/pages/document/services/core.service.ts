@@ -14,4 +14,19 @@ export class CoreService {
       })),
     };
   }
+
+  public patchPageAnnotations(
+    doc: IDocument,
+    pageNumber: number,
+    patch: (annotations: IAnnotation[]) => IAnnotation[],
+  ): IDocument {
+    return {
+      ...doc,
+      pages: doc.pages.map((page: IDocumentPage): IDocumentPage => {
+        return page.number === pageNumber
+          ? { ...page, annotations: patch(page.annotations) }
+          : page;
+      }),
+    };
+  }
 }
