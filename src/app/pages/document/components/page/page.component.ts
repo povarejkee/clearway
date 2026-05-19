@@ -9,10 +9,7 @@ import {
 } from '@angular/core';
 import { IDocumentPage } from '../../interfaces/document.interface';
 import { IAnnotation } from '../../interfaces/annotation.interface';
-import { ContextMenuDirective } from '../../../../core/directives/context-menu/context-menu.directive';
 import { IContextMenuEvent } from '../../../../core/interfaces/context-menu-event.interface';
-import { AnnotationComponent } from '../annotation/annotation.component';
-import { AnnotationDraftComponent } from '../annotation-draft/annotation-draft.component';
 import { IContextMenuItem } from '../../../../core/interfaces/context-menu-item.interface';
 import { CONTEXT_MENU_ITEMS } from '../../db';
 import { TCoordinate } from '../../types';

@@ -89,7 +89,7 @@ export class AnnotationComponent implements OnDestroy {
   };
 
   private onMouseUp = (): void => {
-    const transformed = this.dragTransform();
+    const transformed: TCoordinate = this.dragTransform();
     const zf: number = this.zoomFactor();
 
     const finalVisualX: number = this.annotation().x * zf + (transformed?.x ?? 0);
