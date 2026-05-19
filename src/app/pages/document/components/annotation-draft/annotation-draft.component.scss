@@ -1,18 +1,18 @@
 :host {
   position: absolute;
-  z-index: 10;
+  z-index: var(--z-annotation);
 }
 
 .annotation-draft-input {
   width: 180px;
   min-height: 60px;
   padding: 8px 12px;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   font-family: inherit;
-  border: 2px solid #4a90e2;
-  border-radius: 4px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-primary);
   resize: none;
   outline: none;
 }

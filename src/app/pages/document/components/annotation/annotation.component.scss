@@ -1,22 +1,22 @@
 :host {
   position: absolute;
-  z-index: 10;
+  z-index: var(--z-annotation);
   transform-origin: top left;
 }
 
 .annotation {
   position: relative;
-  background: #fff9c4;
-  border: 1px solid #f0d060;
-  border-radius: 4px;
+  background: var(--color-annotation-bg);
+  border: 1px solid var(--color-annotation-border);
+  border-radius: var(--radius-md);
   min-width: 160px;
   max-width: 260px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
 
   &-content {
     margin: 0;
     padding: 8px 32px 8px 12px;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     word-break: break-word;
     white-space: pre-wrap;
   }
@@ -31,15 +31,15 @@
     align-items: center;
     justify-content: center;
     border: none;
-    border-radius: 2px;
+    border-radius: var(--radius-sm);
     background: transparent;
-    font-size: 14px;
-    color: #999;
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
     cursor: pointer;
 
     &:hover {
       background: rgba(0, 0, 0, 0.08);
-      color: #333;
+      color: var(--color-text);
     }
   }
 }
