@@ -3,6 +3,7 @@ import {
   ComponentRef,
   createComponent,
   Directive,
+  ElementRef,
   EnvironmentInjector,
   inject,
   input,
@@ -14,6 +15,7 @@ import {
   OutputEmitterRef,
 } from '@angular/core';
 import { IContextMenuItem } from '../../interfaces/context-menu-item.interface';
+import { IContextMenuEvent } from '../../interfaces/context-menu-event.interface';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 
 @Directive({
@@ -24,10 +26,11 @@ import { ContextMenuComponent } from '../../components/context-menu/context-menu
 })
 export class ContextMenuDirective implements OnDestroy {
   public items: InputSignal<IContextMenuItem[]> = input.required<IContextMenuItem[]>();
-  public itemSelect: OutputEmitterRef<IContextMenuItem> = output<IContextMenuItem>();
+  public itemSelect: OutputEmitterRef<IContextMenuEvent> = output<IContextMenuEvent>();
 
   private appRef: ApplicationRef = inject(ApplicationRef);
   private injector: EnvironmentInjector = inject(EnvironmentInjector);
+  private el: ElementRef = inject(ElementRef);
 
   private componentRef: ComponentRef<ContextMenuComponent> | null = null;
   private closeListener: (() => void) | null = null;
@@ -37,6 +40,10 @@ export class ContextMenuDirective implements OnDestroy {
 
     this.destroyMenu();
 
+    const rect: DOMRect = this.el.nativeElement.getBoundingClientRect();
+    const x: number = event.clientX - rect.left;
+    const y: number = event.clientY - rect.top;
+
     const componentRef: ComponentRef<ContextMenuComponent> = createComponent(ContextMenuComponent, {
       environmentInjector: this.injector,
       bindings: [
@@ -44,7 +51,7 @@ export class ContextMenuDirective implements OnDestroy {
         inputBinding('y', () => event.clientY),
         inputBinding('items', () => this.items()),
         outputBinding<IContextMenuItem>('itemSelect', (item: IContextMenuItem): void => {
-          this.itemSelect.emit(item);
+          this.itemSelect.emit({ item, x, y });
           this.destroyMenu();
         }),
       ],

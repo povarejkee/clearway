@@ -1,4 +1,3 @@
-export interface IContextMenuItem<T = unknown> {
-  label: string;
-  value: T;
+export interface IContextMenuItem {
+  value: string;
 }

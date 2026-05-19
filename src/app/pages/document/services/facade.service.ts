@@ -4,7 +4,8 @@ import { finalize, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { CoreService } from './core.service';
 import { StateService } from './state.service';
-import { IDocument } from '../interfaces/document.interface';
+import { IAnnotation } from '../interfaces/annotation.interface';
+import { IDocument, IDocumentPage } from '../interfaces/document.interface';
 
 @Injectable()
 export class FacadeService {
@@ -30,6 +31,28 @@ export class FacadeService {
           // todo handle errors
         },
       });
+  }
+
+  public addAnnotation(pageNumber: number, annotation: IAnnotation): void {
+    this.state.document.update((doc: IDocument): IDocument => ({
+      ...doc,
+      pages: doc.pages.map((page: IDocumentPage): IDocumentPage =>
+        page.number === pageNumber
+          ? { ...page, annotations: [...page.annotations, annotation] }
+          : page,
+      ),
+    }));
+  }
+
+  public deleteAnnotation(pageNumber: number, id: string): void {
+    this.state.document.update((doc: IDocument): IDocument => ({
+      ...doc,
+      pages: doc.pages.map((page: IDocumentPage): IDocumentPage =>
+        page.number === pageNumber
+          ? { ...page, annotations: page.annotations.filter((a: IAnnotation): boolean => a.id !== id) }
+          : page,
+      ),
+    }));
   }
 
   public zoomIn(): void {

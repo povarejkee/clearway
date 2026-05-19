@@ -5,4 +5,17 @@
   (itemSelect)="onMenuItemSelect($event)"
 >
   <img [src]="page().imageUrl" [alt]="'Page ' + page().number" />
+
+  @for (annotation of page().annotations; track annotation.id) {
+    <app-annotation [annotation]="annotation" (delete)="annotationDelete.emit(annotation.id)" />
+  }
+
+  @if (draft()) {
+    <app-annotation-draft
+      [x]="draft().x"
+      [y]="draft().y"
+      (commit)="onDraftCommit($event)"
+      (discard)="draft.set(null)"
+    />
+  }
 </div>

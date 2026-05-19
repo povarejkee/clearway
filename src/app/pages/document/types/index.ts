@@ -1,1 +1,4 @@
-export type TAnnotation = 'text' | 'image';
+interface TDraftAnnotationInput {
+  x: number;
+  y: number;
+}

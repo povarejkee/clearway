@@ -16,7 +16,12 @@
 
     <main class="document-viewer">
       @for (page of facade.document()?.pages; track page.number) {
-        <app-page [page]="page" [style.width.px]="pageWidth()" />
+        <app-page
+          [page]="page"
+          [style.width.px]="pageWidth()"
+          (annotationAdd)="facade.addAnnotation(page.number, $event)"
+          (annotationDelete)="facade.deleteAnnotation(page.number, $event)"
+        />
       }
     </main>
   }
