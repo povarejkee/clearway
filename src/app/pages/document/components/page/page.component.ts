@@ -15,6 +15,9 @@ import { CONTEXT_MENU_ITEMS } from '../../db';
 import { TCoordinate } from '../../types';
 import { PageImports } from './imports';
 
+const DRAFT_WIDTH: number = 180;
+const DRAFT_HEIGHT: number = 60;
+
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
@@ -34,7 +37,10 @@ export class PageComponent {
   protected readonly contextMenuItems: IContextMenuItem[] = CONTEXT_MENU_ITEMS;
 
   protected onMenuItemSelect(event: IContextMenuEvent): void {
-    this.draft.set({ x: event.x, y: event.y });
+    this.draft.set({
+      x: Math.min(event.x, event.containerWidth - DRAFT_WIDTH),
+      y: Math.min(event.y, event.containerHeight - DRAFT_HEIGHT),
+    });
   }
 
   protected onDraftCommit(content: string): void {
