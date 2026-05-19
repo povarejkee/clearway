@@ -18,6 +18,9 @@ import { IContextMenuItem } from '../interfaces/context-menu-item.interface';
 import { IContextMenuEvent } from '../interfaces/context-menu-event.interface';
 import { ContextMenuComponent } from '../components/context-menu/context-menu.component';
 
+const MENU_WIDTH: number = 220;
+const MENU_ITEM_HEIGHT: number = 40;
+
 @Directive({
   selector: '[appContextMenu]',
   host: {
@@ -47,11 +50,19 @@ export class ContextMenuDirective implements OnDestroy {
     const componentRef: ComponentRef<ContextMenuComponent> = createComponent(ContextMenuComponent, {
       environmentInjector: this.injector,
       bindings: [
-        inputBinding('x', () => event.clientX),
-        inputBinding('y', () => event.clientY),
+        inputBinding('x', () => Math.min(event.clientX, rect.right - MENU_WIDTH)),
+        inputBinding('y', () =>
+          Math.min(event.clientY, rect.bottom - this.items().length * MENU_ITEM_HEIGHT),
+        ),
         inputBinding('items', () => this.items()),
         outputBinding<IContextMenuItem>('itemSelect', (item: IContextMenuItem): void => {
-          this.itemSelect.emit({ item, x, y });
+          this.itemSelect.emit({
+            item,
+            x,
+            y,
+            containerWidth: rect.width,
+            containerHeight: rect.height,
+          });
           this.destroyMenu();
         }),
       ],
@@ -66,7 +77,7 @@ export class ContextMenuDirective implements OnDestroy {
     document.addEventListener('click', this.closeListener, { once: true });
   }
 
-  public ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.destroyMenu();
   }
 
