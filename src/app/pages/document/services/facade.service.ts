@@ -5,7 +5,7 @@ import { ApiService } from './api.service';
 import { CoreService } from './core.service';
 import { StateService } from './state.service';
 import { IAnnotation } from '../interfaces/annotation.interface';
-import { IDocument, IDocumentPage } from '../interfaces/document.interface';
+import { IDocument } from '../interfaces/document.interface';
 
 @Injectable()
 export class FacadeService {
@@ -25,7 +25,6 @@ export class FacadeService {
       .subscribe({
         next: (doc: IDocument): void => {
           this.state.document.set(doc);
-          console.log(doc);
         },
         error: (err: HttpErrorResponse): void => {
           // todo handle errors
@@ -34,41 +33,39 @@ export class FacadeService {
   }
 
   public addAnnotation(pageNumber: number, annotation: IAnnotation): void {
-    this.state.document.update((doc: IDocument): IDocument => ({
-      ...doc,
-      pages: doc.pages.map((page: IDocumentPage): IDocumentPage =>
-        page.number === pageNumber
-          ? { ...page, annotations: [...page.annotations, annotation] }
-          : page,
-      ),
-    }));
+    this.state.document.update((doc: IDocument): IDocument => {
+      return this.core.patchPageAnnotations(
+        doc,
+        pageNumber,
+        (list: IAnnotation[]): IAnnotation[] => {
+          return [...list, annotation];
+        },
+      );
+    });
   }
 
   public moveAnnotation(pageNumber: number, id: string, x: number, y: number): void {
-    this.state.document.update((doc: IDocument): IDocument => ({
-      ...doc,
-      pages: doc.pages.map((page: IDocumentPage): IDocumentPage =>
-        page.number === pageNumber
-          ? {
-              ...page,
-              annotations: page.annotations.map((a: IAnnotation): IAnnotation =>
-                a.id === id ? { ...a, x, y } : a,
-              ),
-            }
-          : page,
-      ),
-    }));
+    this.state.document.update((doc: IDocument): IDocument => {
+      return this.core.patchPageAnnotations(
+        doc,
+        pageNumber,
+        (list: IAnnotation[]): IAnnotation[] => {
+          return list.map((a: IAnnotation): IAnnotation => (a.id === id ? { ...a, x, y } : a));
+        },
+      );
+    });
   }
 
   public deleteAnnotation(pageNumber: number, id: string): void {
-    this.state.document.update((doc: IDocument): IDocument => ({
-      ...doc,
-      pages: doc.pages.map((page: IDocumentPage): IDocumentPage =>
-        page.number === pageNumber
-          ? { ...page, annotations: page.annotations.filter((a: IAnnotation): boolean => a.id !== id) }
-          : page,
-      ),
-    }));
+    this.state.document.update((doc: IDocument): IDocument => {
+      return this.core.patchPageAnnotations(
+        doc,
+        pageNumber,
+        (list: IAnnotation[]): IAnnotation[] => {
+          return list.filter((a: IAnnotation): boolean => a.id !== id);
+        },
+      );
+    });
   }
 
   public zoomIn(): void {

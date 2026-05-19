@@ -9,6 +9,7 @@
   @for (annotation of page().annotations; track annotation.id) {
     <app-annotation
       [annotation]="annotation"
+      [zoomFactor]="zoomFactor()"
       (delete)="annotationDelete.emit(annotation.id)"
       (move)="annotationMove.emit({ id: annotation.id, x: $event.x, y: $event.y })"
     />

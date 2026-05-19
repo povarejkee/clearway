@@ -14,9 +14,9 @@ import {
   outputBinding,
   OutputEmitterRef,
 } from '@angular/core';
-import { IContextMenuItem } from '../../interfaces/context-menu-item.interface';
-import { IContextMenuEvent } from '../../interfaces/context-menu-event.interface';
-import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
+import { IContextMenuItem } from '../interfaces/context-menu-item.interface';
+import { IContextMenuEvent } from '../interfaces/context-menu-event.interface';
+import { ContextMenuComponent } from '../components/context-menu/context-menu.component';
 
 @Directive({
   selector: '[appContextMenu]',

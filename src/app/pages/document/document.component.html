@@ -19,6 +19,7 @@
         <app-page
           [page]="page"
           [style.width.px]="pageWidth()"
+          [zoomFactor]="facade.zoom() / 100"
           (annotationAdd)="facade.addAnnotation(page.number, $event)"
           (annotationDelete)="facade.deleteAnnotation(page.number, $event)"
           (annotationMove)="facade.moveAnnotation(page.number, $event.id, $event.x, $event.y)"
